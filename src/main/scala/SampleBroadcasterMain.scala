@@ -8,7 +8,7 @@ class SampleActor extends Actor {
   val myId = UUID.randomUUID.toString
 
   def receive = {
-    case message:Message => println("I am"+myId+" /message:"+message.body)    
+    case message:Message => println("I am "+myId+" /message:"+message.body)    
   }
 }
 
@@ -21,10 +21,14 @@ object SampleBroadcasterMain {
 
     //Create actor
     val sub1 = system.actorOf(Props[SampleActor])
+
     //add actor to system-subscriber's network
     system.eventStream.subscribe(sub1, classOf[Message])
 
+    //add another one -the 2nd
+    system.eventStream.subscribe(system.actorOf(Props[SampleActor]), classOf[Message])
 
+    //and add another one -the 3rd
     system.eventStream.subscribe(system.actorOf(Props[SampleActor]), classOf[Message])
 
     //publish messeage from here to the all subscribers.
