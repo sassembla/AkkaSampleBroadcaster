@@ -1,0 +1,40 @@
+apply plugin:"scala"
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	scalaTools  (
+		[group: "org.scala-lang", name: "scala-compiler",version: "2.10.0"],
+		[group: "org.scala-lang", name: "scala-library",version: "2.10.0"],
+		// [group: "org.scala-lang", name: "akka-actors",version: "2.10.0"],not yet applied. 01/13/13 22:27:38	
+	)
+
+	compile (
+		[group: "org.scala-lang", name: "scala-library",version: "2.10.0"],
+		[group: "com.typesafe.akka", name: "akka-actor_2.10",version: "2.1.0"],
+	)
+}
+
+jar {
+	manifest {
+		attributes 'Main-class': "SampleBroadcasterMain"
+	}
+	
+	from {
+		configurations.runtime.collect {
+			if (it.isDirectory()){
+			} else {
+				it
+				zipTree(it)
+			}
+		}
+	}
+}
+
+task runJar(dependsOn:[jar]) << {
+	println("here is ${archivesBaseName}")
+  ant.java(jar:"${libsDir}${File.separator}${archivesBaseName}.jar",fork:true)
+}
+

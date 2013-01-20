@@ -1,0 +1,6 @@
+
+.gradle/*
+
+build/*
+
+src/main/.DS_Store
